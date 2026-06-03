@@ -86,7 +86,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>OSCF – IHK Abschlussprojekt &nbsp;|&nbsp; Daten via GitHub API &nbsp;|&nbsp; Cache: 60 Min.</p>
+            <p>OSCF – Projekt &nbsp;|&nbsp; Daten via GitHub API &nbsp;|&nbsp; Cache: 60 Min.</p>
         </div>
     </footer>
 </body>
