@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OSCF – Open Source Contribution Finder</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
+    <link rel="icon" type="image/svg+xml" href="<?= BASE_URL ?>/public/favicon.svg">
 </head>
 <body>
     <header class="header">
