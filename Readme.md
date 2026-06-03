@@ -8,7 +8,7 @@ Ein PHP/MySQL-Webtool zur Suche nach einsteigerfreundlichen Open-Source-Issues a
 
 Der **Open Source Contribution Finder (OSCF)** hilft Entwicklern dabei, geeignete Open-Source-Projekte auf GitHub zu finden, zu denen sie beitragen können. Über die GitHub Search API werden Issues gefiltert nach Programmiersprache und Label (z. B. `good first issue`, `help wanted`) angezeigt – mit integriertem Caching-System zur Reduzierung von API-Anfragen.
 
-Dieses Projekt entstand als **IHK-Abschlussprojekt** im Rahmen der Ausbildung zum Fachinformatiker Anwendungsentwicklung.
+Dieses Projekt entstand als Projekt im Rahmen der Ausbildung zum Fachinformatiker Anwendungsentwicklung.
 
 ---
 
