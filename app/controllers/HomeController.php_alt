@@ -7,17 +7,18 @@ class HomeController {
 
     public function index(): void {
         $selectedLanguage = $_GET['language'] ?? '';
-        $selectedTopic    = $_GET['topic']    ?? '';
+        $selectedLabel    = $_GET['label']    ?? '';
         $searchQuery      = $_GET['q']        ?? '';
         $page             = max(1, (int)($_GET['page'] ?? 1));
 
-        $github     = new GitHubModel();
-        $result     = $github->searchRepos($selectedLanguage, $searchQuery, $page, $selectedTopic);
-        $items      = $result['items']       ?? [];
+        $github = new GitHubModel();
+        $result = $github->search($selectedLanguage, $selectedLabel, $searchQuery, $page);
+
+        $issues     = $result['items']       ?? [];
         $totalCount = $result['total_count'] ?? 0;
         $error      = $result['error']       ?? null;
         $languages  = $this->languages;
-        $totalPages = min((int)ceil($totalCount / 20), 50);
+        $totalPages = min((int)ceil($totalCount / 20), 50); // GitHub max 1000 Ergebnisse
 
         require_once APP_PATH . '/views/home.php';
     }

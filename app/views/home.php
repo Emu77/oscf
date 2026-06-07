@@ -16,6 +16,7 @@
     </header>
 
     <main class="container">
+
         <!-- Suchformular -->
         <form class="search-form" method="GET" action="<?= BASE_URL ?>/">
             <select name="language">
@@ -27,16 +28,15 @@
                 <?php endforeach; ?>
             </select>
 
-            <select name="label">
-                <option value="good first issue" <?= $selectedLabel === 'good first issue' ? 'selected' : '' ?>>
-                    good first issue
-                </option>
-                <option value="help wanted" <?= $selectedLabel === 'help wanted' ? 'selected' : '' ?>>
-                    help wanted
-                </option>
-                <option value="beginner friendly" <?= $selectedLabel === 'beginner friendly' ? 'selected' : '' ?>>
-                    beginner friendly
-                </option>
+            <input type="text" name="q" placeholder="Repository suchen..."
+                   value="<?= htmlspecialchars($searchQuery) ?>">
+
+            <select name="topic">
+                <option value="">-- Topic wählen --</option>
+                <option value="good-first-issue" <?= $selectedTopic === 'good-first-issue' ? 'selected' : '' ?>>good-first-issue</option>
+                <option value="hacktoberfest" <?= $selectedTopic === 'hacktoberfest' ? 'selected' : '' ?>>hacktoberfest</option>
+                <option value="beginner-friendly" <?= $selectedTopic === 'beginner-friendly' ? 'selected' : '' ?>>beginner-friendly</option>
+                <option value="help-wanted" <?= $selectedTopic === 'help-wanted' ? 'selected' : '' ?>>help-wanted</option>
             </select>
 
             <button type="submit">Suchen</button>
@@ -47,41 +47,80 @@
             <p class="error"><?= htmlspecialchars($error) ?></p>
         <?php else: ?>
             <p class="result-count">
-                <strong><?= number_format($totalCount, 0, ',', '.') ?></strong> Issues gefunden
-                <?php if ($selectedLanguage): ?>
-                    für <em><?= htmlspecialchars($selectedLanguage) ?></em>
+                <strong><?= number_format($totalCount, 0, ',', '.') ?></strong> Repositories gefunden
+                <?php if ($selectedLanguage): ?>· Sprache: <em><?= htmlspecialchars($selectedLanguage) ?></em><?php endif ?>
+                <?php if ($searchQuery): ?>· Suche: <em>"<?= htmlspecialchars($searchQuery) ?>"</em><?php endif ?>
+                <?php if ($totalCount > 1000): ?>
+                    <span class="api-limit-hint">(GitHub zeigt max. 1.000 Ergebnisse)</span>
                 <?php endif ?>
             </p>
 
-            <!-- Issue Cards -->
+            <!-- Repo Cards -->
             <div class="cards">
-                <?php foreach ($issues as $issue): ?>
+                <?php foreach ($items as $repo): ?>
                 <div class="card">
                     <div class="card-header">
-                        <span class="label-badge"><?= htmlspecialchars($selectedLabel) ?></span>
-                        <?php if (!empty($issue['repository']['language'])): ?>
-                            <span class="lang-badge"><?= htmlspecialchars($issue['repository']['language']) ?></span>
+                        <?php if (!empty($repo['language'])): ?>
+                            <span class="lang-badge"><?= htmlspecialchars($repo['language']) ?></span>
                         <?php endif ?>
+                        <span class="star-badge">⭐ <?= number_format($repo['stargazers_count'], 0, ',', '.') ?></span>
                     </div>
+
                     <h3 class="card-title">
-                        <a href="<?= $issue['html_url'] ?>" target="_blank">
-                            <?= htmlspecialchars($issue['title']) ?>
+                        <a href="<?= htmlspecialchars($repo['html_url']) ?>" target="_blank">
+                            <?= htmlspecialchars($repo['full_name']) ?>
                         </a>
                     </h3>
-                    <p class="card-repo">
-                        📁 <?= htmlspecialchars(str_replace('https://api.github.com/repos/', '', $issue['repository_url'] ?? '')) ?>
-                    </p>
+
+                    <?php if (!empty($repo['description'])): ?>
+                        <p class="card-desc"><?= htmlspecialchars(mb_strimwidth($repo['description'], 0, 120, '…')) ?></p>
+                    <?php endif ?>
+
                     <div class="card-footer">
-                        <span>💬 <?= $issue['comments'] ?> Kommentare</span>
-                        <span>📅 <?= date('d.m.Y', strtotime($issue['created_at'])) ?></span>
-                        <a href="<?= $issue['html_url'] ?>" target="_blank" class="btn-issue">
-                            Issue ansehen →
+                        <span>🐛 <?= number_format($repo['open_issues_count'], 0, ',', '.') ?> Issues</span>
+                        <span>🍴 <?= number_format($repo['forks_count'], 0, ',', '.') ?> Forks</span>
+                        <a href="<?= htmlspecialchars($repo['html_url']) ?>" target="_blank" class="btn-issue">
+                            Repo ansehen →
                         </a>
                     </div>
                 </div>
                 <?php endforeach ?>
             </div>
         <?php endif ?>
+
+        <!-- Pagination -->
+        <?php if (!empty($totalPages) && $totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $page - 1 ?>" class="btn-page">← Zurück</a>
+            <?php endif ?>
+
+            <div class="page-numbers">
+                <?php
+                $start = max(1, $page - 2);
+                $end   = min($totalPages, $page + 2);
+                if ($start > 1): ?>
+                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=1" class="btn-page">1</a>
+                    <?php if ($start > 2): ?><span class="page-dots">…</span><?php endif ?>
+                <?php endif ?>
+
+                <?php for ($i = $start; $i <= $end; $i++): ?>
+                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $i ?>"
+                       class="btn-page <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
+                <?php endfor ?>
+
+                <?php if ($end < $totalPages): ?>
+                    <?php if ($end < $totalPages - 1): ?><span class="page-dots">…</span><?php endif ?>
+                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $totalPages ?>" class="btn-page"><?= $totalPages ?></a>
+                <?php endif ?>
+            </div>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $page + 1 ?>" class="btn-page">Weiter →</a>
+            <?php endif ?>
+        </div>
+        <?php endif ?>
+
     </main>
 
     <footer class="footer">
