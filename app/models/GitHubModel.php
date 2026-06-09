@@ -8,8 +8,8 @@ class GitHubModel {
     }
 
     // Repos suchen (Hauptansicht)
-    public function searchRepos(string $language = '', string $searchQuery = '', int $page = 1): array {
-        $cacheKey = 'repo_' . md5($language . $searchQuery . $page);
+    public function searchRepos(string $language = '', string $searchQuery = '', int $page = 1, string $topic = ''): array {
+        $cacheKey = 'repo_' . md5($language . $searchQuery . $page . $topic);
 
         $cached = $this->cache->get($cacheKey);
         if ($cached !== null) {
@@ -19,6 +19,7 @@ class GitHubModel {
         $q = 'has:issues is:public';
         if ($language)    $q .= ' language:' . $language;
         if ($searchQuery) $q .= ' ' . $searchQuery . ' in:name,description,readme';
+        if ($topic)       $q .= ' topic:' . $topic;
 
         $url = $this->apiBase . '/search/repositories?q=' . urlencode($q)
              . '&sort=updated&per_page=20&page=' . $page;

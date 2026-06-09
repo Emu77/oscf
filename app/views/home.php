@@ -92,7 +92,7 @@
         <?php if (!empty($totalPages) && $totalPages > 1): ?>
         <div class="pagination">
             <?php if ($page > 1): ?>
-                <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $page - 1 ?>" class="btn-page">← Zurück</a>
+                <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&topic=<?= urlencode($selectedTopic) ?>&page=<?= $page - 1 ?>" class="btn-page">← Zurück</a>
             <?php endif ?>
 
             <div class="page-numbers">
@@ -100,23 +100,23 @@
                 $start = max(1, $page - 2);
                 $end   = min($totalPages, $page + 2);
                 if ($start > 1): ?>
-                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=1" class="btn-page">1</a>
+                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&topic=<?= urlencode($selectedTopic) ?>&page=1" class="btn-page">1</a>
                     <?php if ($start > 2): ?><span class="page-dots">…</span><?php endif ?>
                 <?php endif ?>
 
                 <?php for ($i = $start; $i <= $end; $i++): ?>
-                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $i ?>"
+                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&topic=<?= urlencode($selectedTopic) ?>&page=<?= $i ?>"
                        class="btn-page <?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
                 <?php endfor ?>
 
                 <?php if ($end < $totalPages): ?>
                     <?php if ($end < $totalPages - 1): ?><span class="page-dots">…</span><?php endif ?>
-                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $totalPages ?>" class="btn-page"><?= $totalPages ?></a>
+                    <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&topic=<?= urlencode($selectedTopic) ?>&page=<?= $totalPages ?>" class="btn-page"><?= $totalPages ?></a>
                 <?php endif ?>
             </div>
 
             <?php if ($page < $totalPages): ?>
-                <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&page=<?= $page + 1 ?>" class="btn-page">Weiter →</a>
+                <a href="?language=<?= urlencode($selectedLanguage) ?>&q=<?= urlencode($searchQuery) ?>&topic=<?= urlencode($selectedTopic) ?>&page=<?= $page + 1 ?>" class="btn-page">Weiter →</a>
             <?php endif ?>
         </div>
         <?php endif ?>
