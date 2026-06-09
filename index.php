@@ -1,10 +1,20 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle === '' || strpos($haystack, $needle) !== false;
+    }
+}
+// Umgebung erkennen
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+if (str_contains($host, 'kronisoft.net')) {
+    define('BASE_URL', '/projekte/oscf');
+} else {
+    define('BASE_URL', '/oscf');
+}
 
 define('BASE_PATH', __DIR__);
 define('APP_PATH',  BASE_PATH . '/app');
-define('BASE_URL',  '/oscf');
 
 spl_autoload_register(function ($class) {
     $paths = [
@@ -19,11 +29,11 @@ spl_autoload_register(function ($class) {
     }
 });
 
-$url = $_GET['url'] ?? 'home';
+$url      = $_GET['url'] ?? 'home';
 $segments = explode('/', trim($url, '/'));
 
 $controllerName = ucfirst($segments[0] ?? 'Home') . 'Controller';
-$method = $segments[1] ?? 'index';
+$method         = $segments[1] ?? 'index';
 
 if (class_exists($controllerName)) {
     $controller = new $controllerName();

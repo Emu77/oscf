@@ -9,7 +9,7 @@ class CacheModel {
 
     public function get(string $key): ?array {
         $stmt = $this->db->prepare(
-            'SELECT data, created_at FROM cache WHERE cache_key = ?'
+            'SELECT data, created_at FROM oscf_cache WHERE cache_key = ?'
         );
         $stmt->execute([$key]);
         $row = $stmt->fetch();
@@ -27,7 +27,7 @@ class CacheModel {
 
     public function set(string $key, array $data): void {
         $stmt = $this->db->prepare(
-            'INSERT INTO cache (cache_key, data)
+            'INSERT INTO oscf_cache (cache_key, data)
              VALUES (?, ?)
              ON DUPLICATE KEY UPDATE data = VALUES(data), created_at = NOW()'
         );
@@ -35,7 +35,7 @@ class CacheModel {
     }
 
     public function delete(string $key): void {
-        $stmt = $this->db->prepare('DELETE FROM cache WHERE cache_key = ?');
+        $stmt = $this->db->prepare('DELETE FROM oscf_cache WHERE cache_key = ?');
         $stmt->execute([$key]);
     }
 }
